@@ -1,0 +1,5 @@
+/node_modules
+/vendor
+/components/**/*.html
+/components
+tailwind-ui-components-main.zip
