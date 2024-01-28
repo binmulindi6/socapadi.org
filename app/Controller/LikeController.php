@@ -34,6 +34,7 @@ class LikeController extends Controller
                 [
                     'event_id' => $params["event_id"],
                     'user_id' => $params["user_id"],
+                    'created_at' => date('Y-m-d h:i'),
                 ]
             );
 

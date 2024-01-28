@@ -9,7 +9,7 @@ class Mail extends Model
 {
 
 
-    protected $table_name = 'mails';
+   protected $table_name = 'mails';
     protected $class_name = 'App\Model\Mail';
 
     function _construct()

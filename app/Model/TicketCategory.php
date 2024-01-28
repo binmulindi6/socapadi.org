@@ -6,8 +6,18 @@ class TicketCategory extends Model
 {
 
 
-    protected $table_name = 'ticket_categories';
+   protected $table_name = 'ticket_categories';
     protected $class_name = 'App\Model\TicketCategory';
+    
+    public $type;
+    public $price;
+    public $currency;
+    public $spots;
+    public $available;
+    public $event_id;
+    public $deleted_at;
+    public $created_at;
+    public $updated_at;
 
     public function event()
     {

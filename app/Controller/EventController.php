@@ -6,6 +6,8 @@ use App\Http\Request;
 use App\Model\Event;
 use DateTime;
 
+use function PHPSTORM_META\map;
+
 // save mail in DB
 class EventController extends Controller
 {
@@ -13,7 +15,29 @@ class EventController extends Controller
     public static function index()
     {
         $events = new Event();
-        return $events->latest();
+        // var_dump($events->latest());
+        // die();
+        $data = array_map(function ($arr) {
+            return $arr->charge();
+        }, $events->latest());
+        return $data;
+    }
+    public static function hots()
+    {
+        $events = new Event();
+        $data = array_map(function ($arr) {
+            return $arr->charge();
+        }, $events->sponsored());
+        return $data;
+    }
+    public static function next()
+    {
+        $events = new Event();
+        $data = array_map(function ($arr) {
+            return $arr->charge();
+        }, $events->next());
+        // return $events->next();
+        return $data[0];
     }
 
     public static function show($request)
@@ -21,7 +45,7 @@ class EventController extends Controller
         // return [1];
         $instance = new Event();
         $event = $instance->find($request['id']);
-        return $event->show();
+        return $event->chargeAll();
     }
 
     public static function destroy($request)
@@ -36,6 +60,7 @@ class EventController extends Controller
         if (Request::validate([
             'title',
             'description',
+            'event_category_id',
             'organiser',
             'date',
             'email',
@@ -50,6 +75,7 @@ class EventController extends Controller
             if ($cover) {
                 $ecole =  $instance->create(
                     [
+                        'event_category_id' => $params["event_category_id"],
                         'title' => $params["title"],
                         'description' => $params["description"],
                         // 'organiser' => $params["organiser"],
@@ -117,6 +143,22 @@ class EventController extends Controller
             return "please check params ";
         }
     }
+    public static function view()
+    {
+        $params = Request::params();
+        $instance = new Event();
+        $self =  $instance->find($params['event_id']);
+        if (Request::validate([
+            'event_id',
+        ]) && $self) {
+            $self->viewed();
+            return "success";
+        } else {
+            // return "oklm";
+            http_response_code(400);
+            return "please check params ";
+        }
+    }
 
     public static function createManager()
     {
@@ -160,5 +202,12 @@ class EventController extends Controller
         $instance = new Event();
         $event = $instance->find($request['id']);
         return $event->payments();
+    }
+    public static function ticketCategories($request)
+    {
+        // return [1];
+        $instance = new Event();
+        $event = $instance->find($request['id']);
+        return $event->ticket_categories();
     }
 }

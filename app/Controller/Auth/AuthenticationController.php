@@ -13,9 +13,10 @@ class AuthenticationController extends Controller
 
     public static function register()
     {
+
         if (Request::validate([
             'first_name',
-            'last_name',
+            // 'last_name',
             'username',
             'email',
             'telephone',
@@ -24,10 +25,24 @@ class AuthenticationController extends Controller
             $params = Request::params();
             $instance = new User();
             // $mail = new Mail();
-            $instance->create(
+            if ($instance->checkUsername($params["username"])) {
+                http_response_code(400);
+                return "Username already exists";
+            }
+            if ($instance->checkEmail($params["email"])) {
+                http_response_code(400);
+                return "Email already taken";
+            }
+            if ($instance->checkPhone($params["telephone"])) {
+                http_response_code(400);
+                return "Phone Number already taken";
+            }
+
+            // die();
+            $user = $instance->create(
                 [
                     'first_name' => $params["first_name"],
-                    'last_name' => $params["last_name"],
+                    // 'last_name' => $params["last_name"],
                     // 'organiser' => $params["organiser"],
                     'username' => $params["username"],
                     'email' => $params["email"],
@@ -38,7 +53,7 @@ class AuthenticationController extends Controller
             );
 
             // return $created->send();
-            $user = $instance->findByOptions([$params['email']]);
+            // $user = $instance->findByOptions([$params['email']]);
             $token = self::generateToken($user->id);
             return [
                 "user" => $user,
@@ -53,19 +68,23 @@ class AuthenticationController extends Controller
     public static function login()
     {
         // password_verify($userEnteredPassword, $storedHashedPassword)
+        // var_dump($_SERVER['HTTP_AUTHORIZATION']);
         if (Request::validate([
             'username',
             'password',
         ])) {
             $params = Request::params();
             $instance = new User();
-            $user = $instance->findByOptions([$params['username']]);
+            $user = $instance->findByOptions(["username" => $params['username']]);
             if (!is_null($user) && password_verify($params['password'], $user->password)) {
-                $token = self::generateToken($user->id);
-                return [
-                    "user" => $user,
-                    "token" => $token,
-                ];
+
+                $token = $user->getLastToken() ? $user->getLastToken()[0]->token : self::generateToken($user->id);
+                // return $token
+                return
+                    [
+                        "user" => $user,
+                        "token" => $token,
+                    ];
             } else {
                 // return "oklm";
                 http_response_code(400);

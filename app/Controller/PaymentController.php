@@ -26,10 +26,11 @@ class PaymentController extends Controller
         if (Request::validate([
             'code',
             // 'ticket_id',
+            "ticket_category_id",
             'event_id',
             'user_id',
             'payment_method_id',
-            'telephone',
+            // 'telephone',
         ])) {
             $params = Request::params();
             $instance = new Payment();
@@ -41,13 +42,15 @@ class PaymentController extends Controller
                     'event_id' => $params["event_id"],
                     'user_id' => $params["user_id"],
                     'payment_method_id' => $params["payment_method_id"],
-                    'telephone' => $params["telephone"],
+                    'ticket_category_id' => $params["ticket_category_id"],
+                    'telephone' => isset($params["telephone"]) ? $params["telephone"] : NULL,
+                    // 'spot' => isset($params["spot"]) ? $params["spot"] : NULL,
                     'created_at' => date('Y-m-d h:i'),
                 ]
             );
 
             // return $created->send();
-            return "success";
+            return $item;
         } else {
             // return "oklm";
             http_response_code(400);

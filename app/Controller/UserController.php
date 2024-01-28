@@ -126,6 +126,24 @@ class UserController extends Controller
             return "please check params ";
         }
     }
+    public static function getReservations($params)
+    {
+        $instance = new User();
+        $user = $instance->find($params['id']);
+        return $user->reservations();
+    }
+    public static function getNotifications($params)
+    {
+        $instance = new User();
+        $user = $instance->find($params['id']);
+        return $user->notifications();
+    }
+    public static function getTickets($params)
+    {
+        $instance = new User();
+        $user = $instance->find($params['id']);
+        return $user->tickets();
+    }
     public static function search()
     {
         $items = new User();

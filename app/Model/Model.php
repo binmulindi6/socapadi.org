@@ -8,10 +8,10 @@ use App\Config\Database;
 
 class Model
 {
-  private $conn;
+  static $conn;
   protected $table_name;
   protected $class_name;
-  // protected $id;
+  public $id;
 
   function __construct()
   {
@@ -75,6 +75,27 @@ class Model
     // echo ("select * from $this->table_name where $ops and deleted_at is NULL");
     // die();
     return $this->getDatas("select * from $this->table_name where $ops and deleted_at is NULL order by created_at desc");
+  }
+  public function  getByCustomQuery($options)
+  {
+    // // echo $this->table_name;
+    // $ops = "";
+    // $indexes = count($options);
+    // // echo($indexes);
+    // $i = 1;
+    // foreach ($options as $index => $value) {
+    //   if ($i === $indexes) {
+    //     $ops .= "$index = '$value' ";
+    //   } else {
+    //     $ops .= "$index = '$value' and ";
+    //   }
+    //   $i += 1;
+    // }
+    // echo $ops;
+    // echo ("select * from $this->table_name where $ops and deleted_at is NULL");
+    // var_dump($options);
+    // die();
+    return $this->getDatas("select * from $this->table_name where $options");
   }
 
   public function  select($options, $id)

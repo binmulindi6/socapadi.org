@@ -27,7 +27,7 @@ class TicketCategoryController extends Controller
             'type',
             'price',
             'currency',
-            'spots',
+            // 'spots',
             'event_id',
         ])) {
             $params = Request::params();
@@ -38,7 +38,7 @@ class TicketCategoryController extends Controller
                     'type' => $params["type"],
                     'price' => $params["price"],
                     'currency' => $params["currency"],
-                    'spots' => $params["spots"],
+                    'spots' => $params["spots"] ? $params["spots"] : NULL,
                     'event_id' => $params["event_id"],
                     'created_at' => date('Y-m-d h:i'),
                 ]

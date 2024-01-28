@@ -27,23 +27,27 @@ class PaymentMethodController extends Controller
             'event_id',
             'name',
             'number',
-            'cover',
+            // 'cover',
         ])) {
             $params = Request::params();
             $instance = new PaymentMethod();
             // $mail = new Mail();
-            $item =  $instance->create(
-                [
-                    'event_id' => $params["event_id"],
-                    'name' => $params["name"],
-                    'number' => $params["number"],
-                    'cover' => $params["cover"],
-                    'created_at' => date('Y-m-d h:i'),
-                ]
-            );
-
-            // return $created->send();
-            return "success";
+            $cover = $instance->uploadImage('cover', "methods/");
+            if ($cover) {
+                $item =  $instance->create(
+                    [
+                        'event_id' => $params["event_id"],
+                        'name' => $params["name"],
+                        'number' => $params["number"],
+                        'cover' => $cover,
+                        'created_at' => date('Y-m-d h:i'),
+                    ]
+                );
+                return $item;
+            } else {
+                http_response_code(500);
+                return "image not uploaded";
+            }
         } else {
             // return "oklm";
             http_response_code(400);

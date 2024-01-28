@@ -25,26 +25,25 @@ class ReservationController extends Controller
     {
         if (Request::validate([
             'event_id',
-            'ticket_id',
-            // 'ticket_category_id',
+            'ticket_category_id',
             'user_id',
-            'spot',
+            // 'spot',
         ])) {
             $params = Request::params();
             $instance = new Reservation();
             // $mail = new Mail();
             $item =  $instance->create(
                 [
-                    // 'ticket_id' => $params["ticket_id"],
                     'event_id' => $params["event_id"],
+                    'ticket_category_id' => $params["ticket_category_id"],
                     'user_id' => $params["user_id"],
-                    'spot' => $params["spot"],
+                    'spot' => isset($params["spot"]) ? $params["spot"] : NULL,
                     'created_at' => date('Y-m-d h:i'),
                 ]
             );
 
             // return $created->send();
-            return "success";
+            return $item;
         } else {
             // return "oklm";
             http_response_code(400);

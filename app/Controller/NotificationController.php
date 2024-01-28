@@ -24,6 +24,7 @@ class NotificationController extends Controller
     public static function store()
     {
         if (Request::validate([
+            'title',
             'text',
             'user_id',
         ])) {
@@ -32,8 +33,11 @@ class NotificationController extends Controller
             // $mail = new Mail();
             $item =  $instance->create(
                 [
+                    'title' => $params["title"],
+                    'icon' => isset($params["icon"]) ? $params["icon"] : 'notifications',
                     'text' => $params["text"],
                     'user_id' => $params["user_id"],
+                    'created_at' => date('Y-m-d h:i'),
                 ]
             );
 

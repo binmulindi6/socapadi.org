@@ -8,6 +8,24 @@ class User extends Model
     protected $class_name = 'App\Model\User';
 
 
+    public $first_name;
+    public $last_name;
+    public $username;
+    public $email;
+    public $telephone;
+    public $email_verified_at;
+    public $password;
+    public $event_id;
+    public $is_admin;
+    public $is_manager;
+    public $is_operator;
+    public $is_active;
+    public $avatar;
+    public $remember_token;
+    public $deleted_at;
+    public $created_at;
+    public $updated_at;
+
     public function getInfo()
     {
         if (!is_null($this)) {
@@ -32,6 +50,32 @@ class User extends Model
     {
         $eventInstance = new Event();
         return $eventInstance->findByOptions(['id' => $this->event_id]);
+    }
+    public function tickets()
+    {
+        $ticketsInstance = new Ticket();
+        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
+        return array_map(function ($ticktes) {
+            return $ticktes->charge();
+        }, $ticketsInstance->getByOptions(['user_id' => $this->id]));
+    }
+    public function reservations()
+    {
+        $reservationInstance = new Reservation();
+        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
+        return array_map(function ($reservation) {
+            return $reservation->charge();
+        }, $reservationInstance->getByOptions(['user_id' => $this->id]));
+    }
+    public function notifications()
+    {
+        $notificationInstance = new Notification();
+        return $notificationInstance->getByOptions(['user_id' => $this->id]);
+    }
+    public function getLastToken()
+    {
+        $tokenInstance = new PersonalToken();
+        return $tokenInstance->getUserLastToken($this->id);
     }
 
     public function changeStatus()
@@ -77,5 +121,17 @@ class User extends Model
             return true;
         else
             return false;
+    }
+    public function checkUsername($username)
+    {
+        return $this->findByOptions(['username' => $username]);
+    }
+    public function checkEmail($username)
+    {
+        return $this->findByOptions(['email' => $username]);
+    }
+    public function checkPhone($username)
+    {
+        return $this->findByOptions(['telephone' => $username]);
     }
 }

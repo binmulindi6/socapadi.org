@@ -12,7 +12,7 @@ class Ecole extends Model
 {
 
 
-    protected $table_name = 'ecoles';
+   protected $table_name = 'ecoles';
     protected $class_name = 'App\Model\Ecole';
 
     function _construct()
