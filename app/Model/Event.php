@@ -72,7 +72,7 @@ class Event extends Model
     }
     public function next()
     {
-        return $this->getByCustomQuery("date >= " . date('Y-m-d') . " and deleted_at is NULL order by date asc");
+        return $this->getByCustomQuery("date >= '" . date('Y-m-d') . "' and deleted_at is NULL order by date asc");
     }
     public function category()
     {

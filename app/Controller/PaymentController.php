@@ -25,7 +25,8 @@ class PaymentController extends Controller
     {
         if (Request::validate([
             'code',
-            // 'ticket_id',
+            'name_holder',
+            // 'spot',
             "ticket_category_id",
             'event_id',
             'user_id',
@@ -38,13 +39,13 @@ class PaymentController extends Controller
             $item =  $instance->create(
                 [
                     'code' => $params["code"],
-                    // 'ticket_id' => $params["ticket_id"]
+                    'name_holder' => $params["name_holder"],
                     'event_id' => $params["event_id"],
                     'user_id' => $params["user_id"],
                     'payment_method_id' => $params["payment_method_id"],
                     'ticket_category_id' => $params["ticket_category_id"],
                     'telephone' => isset($params["telephone"]) ? $params["telephone"] : NULL,
-                    // 'spot' => isset($params["spot"]) ? $params["spot"] : NULL,
+                    'spot' => isset($params["spot"]) ? $params["spot"] : NULL,
                     'created_at' => date('Y-m-d h:i'),
                 ]
             );

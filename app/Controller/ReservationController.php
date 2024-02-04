@@ -25,6 +25,8 @@ class ReservationController extends Controller
     {
         if (Request::validate([
             'event_id',
+            'code',
+            'name_holder',
             'ticket_category_id',
             'user_id',
             // 'spot',
@@ -35,6 +37,8 @@ class ReservationController extends Controller
             $item =  $instance->create(
                 [
                     'event_id' => $params["event_id"],
+                    'code' => $params["code"],
+                    'name_holder' => $params["name_holder"],
                     'ticket_category_id' => $params["ticket_category_id"],
                     'user_id' => $params["user_id"],
                     'spot' => isset($params["spot"]) ? $params["spot"] : NULL,

@@ -9,6 +9,8 @@ class Reservation extends Model
     protected $table_name = 'reservations';
     protected $class_name = 'App\Model\Reservation';
 
+    public $code;
+    public $name_holder;
     public $user_id;
     public $event;
     public $event_id;

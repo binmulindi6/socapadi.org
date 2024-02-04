@@ -9,7 +9,9 @@ class Payment extends Model
    protected $table_name = 'payments';
     protected $class_name = 'App\Model\Payment';
     
+    // public $code;
     public $code;
+    public $name_holder;
     public $user_id;
     public $event_id;
     public $ticket_id;

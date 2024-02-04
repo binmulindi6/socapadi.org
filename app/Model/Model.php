@@ -92,8 +92,8 @@ class Model
     //   $i += 1;
     // }
     // echo $ops;
-    // echo ("select * from $this->table_name where $ops and deleted_at is NULL");
-    // var_dump($options);
+    // echo ("select * from $this->table_name where $options");
+    // // var_dump($options);
     // die();
     return $this->getDatas("select * from $this->table_name where $options");
   }
