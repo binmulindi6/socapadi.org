@@ -67,6 +67,14 @@ class User extends Model
             return $reservation->charge();
         }, $reservationInstance->getByOptions(['user_id' => $this->id]));
     }
+    public function payments()
+    {
+        $paymentInstance = new Payment();
+        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
+        return array_map(function ($payment) {
+            return $payment->charge();
+        }, $paymentInstance->getByOptions(['user_id' => $this->id]));
+    }
     public function notifications()
     {
         $notificationInstance = new Notification();

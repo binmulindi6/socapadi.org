@@ -61,4 +61,6 @@ class Reservation extends Model
         $this->ticket_category = $this->ticket_category();
         return $this;
     }
+
+
 }

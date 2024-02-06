@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Http\Request;
+use App\Model\Notification;
 use App\Model\Reservation;
+use App\Model\TicketCategory;
 
 // save mail in DB
 class ReservationController extends Controller
@@ -52,6 +54,45 @@ class ReservationController extends Controller
             // return "oklm";
             http_response_code(400);
             return "please check params ";
+        }
+    }
+    public static function storeMany()
+    {
+
+        $params = Request::params();
+        // Get the raw POST data
+        $postData = file_get_contents("php://input");
+
+        // Decode JSON data
+        $dataArray = json_decode($postData, true);
+        if ($dataArray !== null) {
+
+            foreach ($dataArray as $data) {
+                $instance = new Reservation();
+                $ticketCatInstance = new TicketCategory();
+                $ticketCat = $ticketCatInstance->find($data['ticket_category_id']);
+                $spot = $ticketCat->assignSpot();
+                $item =  $instance->create(
+                    [
+                        'event_id' => $data["event_id"],
+                        'code' => $data["code"],
+                        'name_holder' => $data["name_holder"],
+                        'ticket_category_id' => $data["ticket_category_id"],
+                        'user_id' => $data["user_id"],
+                        'spot' => isset($data["spot"]) ? $spot : NULL,
+                        'created_at' => date('Y-m-d h:i'),
+                    ]
+                );
+
+                // return $item;
+            }
+
+            Notification::notify($data['user_id'], "Reservation Receved", "Your Reseravtion has been made successfully, for more details check on My Tickets menu", 'event');
+            return 'success';
+        } else {
+            http_response_code(400);
+            return "please check params ";
+            return false;
         }
     }
     public static function search()

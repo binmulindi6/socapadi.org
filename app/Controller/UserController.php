@@ -132,6 +132,12 @@ class UserController extends Controller
         $user = $instance->find($params['id']);
         return $user->reservations();
     }
+    public static function getPayments($params)
+    {
+        $instance = new User();
+        $user = $instance->find($params['id']);
+        return $user->payments();
+    }
     public static function getNotifications($params)
     {
         $instance = new User();

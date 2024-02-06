@@ -6,9 +6,9 @@ class TicketCategory extends Model
 {
 
 
-   protected $table_name = 'ticket_categories';
+    protected $table_name = 'ticket_categories';
     protected $class_name = 'App\Model\TicketCategory';
-    
+
     public $type;
     public $price;
     public $currency;
@@ -32,5 +32,13 @@ class TicketCategory extends Model
     {
         $ticketInstance = new Ticket();
         return $ticketInstance->getByOptions(['ticket_category_id' => $this->id]);
+    }
+    public function assignSpot()
+    {
+        $this->save(
+            ['available' => $this->available - 1]
+        );
+
+        return $this->spots -  ($this->available);
     }
 }

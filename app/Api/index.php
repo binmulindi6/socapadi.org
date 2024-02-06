@@ -47,6 +47,7 @@ if (Request::get($host . '/api', true) && !isset($data)) {
             (Request::get($host . '/api/users') && ($data = UserController::index()))
                 ?: (Request::get($host . '/api/users', false, ['id']) && $data = UserController::show(Request::getParams(['id'])))
                 ?: (Request::get($host . '/api/users/reservations', false, ['id']) && $data = UserController::getReservations(Request::getParams(['id'])))
+                ?: (Request::get($host . '/api/users/payments', false, ['id']) && $data = UserController::getPayments(Request::getParams(['id'])))
                 ?: (Request::get($host . '/api/users/notifications', false, ['id']) && $data = UserController::getNotifications(Request::getParams(['id'])))
                 ?: (Request::get($host . '/api/users/tickets', false, ['id']) && $data = UserController::getTickets(Request::getParams(['id'])))
                 ?:  NotFound();
@@ -60,6 +61,7 @@ if (Request::get($host . '/api', true) && !isset($data)) {
         //GET PAYMENTS
         if (Request::get($host . '/api/payments', true)) {
             (Request::get($host . '/api/payments') && ($data = TicketController::index()))
+                ?: (Request::get($host . '/api/payments/methods') && $data = PaymentMethodController::index())
                 ?: (Request::get($host . '/api/payments', false, ['id']) && $data = TicketController::show(Request::getParams(['id'])))
                 ?:  NotFound();
         }
@@ -84,7 +86,9 @@ if (Request::post($host . '/api', true)) {
                 ?: (Request::post($host . '/api/events/create_manager') && AbilityMiddleware::check(['admin']) && ($data = EventController::createManager()))
                 ?: (Request::post($host . '/api/events/create_operator') && AbilityMiddleware::check(['admin', 'manager']) && ($data = EventController::createOperator()))
                 ?: (Request::post($host . '/api/events/reserve') && AbilityMiddleware::check(['simple', 'admin']) && ($data = ReservationController::store()))
+                ?: (Request::post($host . '/api/events/reserve_many') && AbilityMiddleware::check(['simple', 'admin']) && ($data = ReservationController::storeMany()))
                 ?: (Request::post($host . '/api/events/pay') && AbilityMiddleware::check(['simple', 'admin']) && ($data = PaymentController::store()))
+                ?: (Request::post($host . '/api/events/pay_many') && AbilityMiddleware::check(['simple', 'admin']) && ($data = PaymentController::storeMany()))
                 ?: (Request::post($host . '/api/events/like') && AbilityMiddleware::check(['simple']) && ($data = LikeController::store()))
                 ?:  NotFound();
         }

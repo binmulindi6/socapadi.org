@@ -203,6 +203,13 @@ class EventController extends Controller
         $event = $instance->find($request['id']);
         return $event->payments();
     }
+    public static function methods($request)
+    {
+        // return [1];
+        $instance = new Event();
+        $event = $instance->find($request['id']);
+        return $event->methods();
+    }
     public static function ticketCategories($request)
     {
         // return [1];

@@ -8,7 +8,7 @@ use App\Config\Database;
 
 class Model
 {
-  static $conn;
+  protected $conn;
   protected $table_name;
   protected $class_name;
   public $id;

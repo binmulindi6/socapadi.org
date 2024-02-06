@@ -113,6 +113,11 @@ class Event extends Model
         $paymentInstance = new Payment();
         return $paymentInstance->getByOptions(['event_id' => $this->id]);
     }
+    public function methods()
+    {
+        $paymentMethodsInstance = new PaymentMethod();
+        return $paymentMethodsInstance->getByOptions(['event_id' => $this->id]);
+    }
     public function viewed()
     {
         $views = (int)$this->views + 1;

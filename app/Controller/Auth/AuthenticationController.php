@@ -75,7 +75,7 @@ class AuthenticationController extends Controller
         ])) {
             $params = Request::params();
             $instance = new User();
-            $user = $instance->findByOptions(["username" => $params['username']]);
+            $user = $instance->findByOptions(["username" => $params['username']]) ? $instance->findByOptions(["username" => $params['username']]) : $instance->findByOptions(["email" => $params['username']]);
             if (!is_null($user) && password_verify($params['password'], $user->password)) {
 
                 $token = $user->getLastToken() ? $user->getLastToken()[0]->token : self::generateToken($user->id);
