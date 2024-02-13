@@ -27,6 +27,7 @@ class Event extends Model
     public $is_active;
     public $is_free;
     public $is_reservable;
+    public $is_sponsored;
     public $deleted_at;
     public $created_at;
     public $updated_at;
@@ -50,6 +51,9 @@ class Event extends Model
 
     public function charge()
     {
+        $this->category = $this->category();
+        $this->operators = $this->operators();
+        $this->managers = $this->managers();
         $this->category = $this->category();
         $this->likes = $this->likes();
         $this->ticket_categories = $this->ticket_categories();
@@ -94,14 +98,20 @@ class Event extends Model
 
     public function managers()
     {
-        $userInstance = new User();
-        return $userInstance->getByOptions(['event_id' => $this->id, "is_manager" => 1]);
+        $userInstance = new EventUser();
+        $users = $userInstance->getByOptions(['event_id' => $this->id, "role" => 'manager']);
+        return $users ?  array_map(function ($user) {
+            return $user->user();
+        }, $users) : [];
     }
 
     public function operators()
     {
-        $userInstance = new User();
-        return $userInstance->getByOptions(['event_id' => $this->id, "is_operator" => 1]);
+        $userInstance = new EventUser();
+        $users = $userInstance->getByOptions(['event_id' => $this->id, "role" => 'operator']);
+        return $users ?  array_map(function ($user) {
+            return $user->user();
+        }, $users) : [];
     }
     public function reservations()
     {

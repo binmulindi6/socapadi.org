@@ -35,10 +35,11 @@ class TicketCategory extends Model
     }
     public function assignSpot()
     {
+        $available = $this->available;
         $this->save(
-            ['available' => $this->available - 1]
+            ['available' => $this->available -1]
         );
 
-        return $this->spots -  ($this->available);
+        return (int)($this->spots + 1) -  (int)($available);
     }
 }

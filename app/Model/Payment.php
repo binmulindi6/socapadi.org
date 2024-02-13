@@ -22,6 +22,7 @@ class Payment extends Model
     public $ticket_category;
     protected $payment_method_id;
     public $spot;
+    public $owner;
     public $verified;
     public $approved;
     public $approved_at;

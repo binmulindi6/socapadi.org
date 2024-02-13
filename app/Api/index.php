@@ -1,6 +1,7 @@
 <?php
 
 use App\Controller\Auth\AuthenticationController;
+use App\Controller\EventCategoryController;
 use App\Controller\EventController;
 use App\Controller\LikeController;
 use App\Controller\PaymentController;
@@ -15,7 +16,8 @@ use App\Middleware\AuthMiddleware;
 
 require_once 'vendor/autoload.php';
 
-$host = "";
+$host = "/kwetueventsapi";
+// echo var_dump($_SERVER['REQUEST_URI']);
 
 //AUTH
 if (Request::post($host . '/auth', true)) {
@@ -39,9 +41,11 @@ if (Request::get($host . '/api', true) && !isset($data)) {
                 ?: (Request::get($host . '/api/events/reservations', false, ['id']) && $data = EventController::reservations(Request::getParams(['id'])))
                 ?: (Request::get($host . '/api/events/tickets/categories', false, ['id']) && $data = EventController::ticketCategories(Request::getParams(['id'])))
                 ?: (Request::get($host . '/api/events/payments', false, ['id']) && $data = EventController::payments(Request::getParams(['id'])))
+                ?: (Request::get($host . '/api/events/tickets', false, ['id']) && $data = EventController::tickets(Request::getParams(['id'])))
                 ?:  NotFound();
         }
 
+        (Request::get($host . '/api/categories') && ($data = EventCategoryController::index()));
         //GET USERS
         if (Request::get($host . '/api/users', true)) {
             (Request::get($host . '/api/users') && ($data = UserController::index()))
@@ -77,14 +81,15 @@ if (Request::get($host . '/api', true) && !isset($data)) {
 //ALL GETS GOES HERE
 if (Request::post($host . '/api', true)) {
     //MIDDELEWARE
-    (Request::post($host . '/api/events/view')) && ($data = EventController::view());
     if (AuthMiddleware::check() && !isset($data)) {
+        (Request::post($host . '/api/events/view')) && ($data = EventController::view());
+        ((Request::post($host . '/api/events_categories') && AbilityMiddleware::check(['admin',])) && ($data = EventCategoryController::store()));
         //POST EVENTS
         if (Request::post($host . '/api/event', true)) {
             (Request::post($host . '/api/events/store') && AbilityMiddleware::check(['admin']) && ($data = EventController::store()))
                 ?: (Request::post($host . '/api/events/update') && AbilityMiddleware::check(['admin', 'manager']) && ($data = EventController::update()))
-                ?: (Request::post($host . '/api/events/create_manager') && AbilityMiddleware::check(['admin']) && ($data = EventController::createManager()))
-                ?: (Request::post($host . '/api/events/create_operator') && AbilityMiddleware::check(['admin', 'manager']) && ($data = EventController::createOperator()))
+                // ?: (Request::post($host . '/api/events/create_manager') && AbilityMiddleware::check(['admin']) && ($data = EventController::createManager()))
+                ?: (Request::post($host . '/api/events/create_user') && AbilityMiddleware::check(['admin', 'manager']) && ($data = EventController::createUser()))
                 ?: (Request::post($host . '/api/events/reserve') && AbilityMiddleware::check(['simple', 'admin']) && ($data = ReservationController::store()))
                 ?: (Request::post($host . '/api/events/reserve_many') && AbilityMiddleware::check(['simple', 'admin']) && ($data = ReservationController::storeMany()))
                 ?: (Request::post($host . '/api/events/pay') && AbilityMiddleware::check(['simple', 'admin']) && ($data = PaymentController::store()))
@@ -93,9 +98,11 @@ if (Request::post($host . '/api', true)) {
                 ?:  NotFound();
         }
 
+
         //
         if (Request::post($host . '/api/user', true)) {
-            (Request::post($host . '/api/users/change_status') && AbilityMiddleware::check(['admin',]) && ($data = UserController::changStatus()))
+            (Request::post($host . '/api/users/change_status') && AbilityMiddleware::check(['admin']) && ($data = UserController::changStatus()))
+                ?: (Request::post($host . '/api/users/update') && AbilityMiddleware::check(['admin', 'simple']) && ($data = UserController::update()))
                 ?: (Request::post($host . '/api/users/make_admin') && AbilityMiddleware::check(['admin']) && ($data = UserController::makeAdmin()))
                 ?:  NotFound();
         }

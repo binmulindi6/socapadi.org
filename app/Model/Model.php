@@ -236,7 +236,7 @@ class Model
     try {
       $stmt = $this->conn->query($query);
       if ($stmt) {
-        return $this->find($this->conn->lastInsertId());
+        return $this->find($this->conn->lastInsertId()) ? $this->find($this->conn->lastInsertId()) : $this->find($this->id);
       } else {
         http_response_code(500);
         return "Error While updating record: ";
@@ -247,20 +247,18 @@ class Model
     }
   }
 
-  public function  uploadImage($name, $folder)
+  public function  uploadImage($name, $folder, $file = null)
   {
     $path = __DIR__ . '/../../public/assets/images/' . $folder;
-    // die();
-
+    // var_dump($_FILES);
+    // return false;
     if (isset($_FILES[$name])) {
       $fileName = $_FILES[$name]['name'];
-      $fileSize = $_FILES[$name]['size'];
       $filePath = $_FILES[$name]['tmp_name'];
       $extension = pathinfo($fileName, PATHINFO_EXTENSION);
       $bytes = random_bytes(5);
       $imageCover = bin2hex($bytes) . "." . $extension;
       if (move_uploaded_file($filePath, $path . $imageCover)) {
-
         return $imageCover;
       } else {
         return false;

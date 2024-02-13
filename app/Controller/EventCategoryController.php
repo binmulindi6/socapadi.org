@@ -25,7 +25,7 @@ class EventCategoryController extends Controller
     {
         if (Request::validate([
             'name',
-            'cover',
+            // 'cover',
         ])) {
             $params = Request::params();
             $instance = new EventCategory();
@@ -33,8 +33,9 @@ class EventCategoryController extends Controller
             $item =  $instance->create(
                 [
                     'name' => $params["name"],
-                    'cover' => $params["cover"],
+                    'cover' => $params["cover"] ? $params["cover"] : '',
                     'created_at' => date('Y-m-d h:i'),
+                    'updated_at' => date('Y-m-d h:i'),
                 ]
             );
 

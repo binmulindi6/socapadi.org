@@ -38,7 +38,8 @@ class TicketCategoryController extends Controller
                     'type' => $params["type"],
                     'price' => $params["price"],
                     'currency' => $params["currency"],
-                    'spots' => $params["spots"] ? $params["spots"] : NULL,
+                    'spots' => isset($params["spots"]) ? $params["spots"] : NULL,
+                    'available' => isset($params["spots"]) ? $params["spots"] : NULL,
                     'event_id' => $params["event_id"],
                     'created_at' => date('Y-m-d h:i'),
                 ]
