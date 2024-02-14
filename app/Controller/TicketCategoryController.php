@@ -53,6 +53,48 @@ class TicketCategoryController extends Controller
             return "please check params ";
         }
     }
+    public static function update()
+    {
+        $params = Request::params();
+        $instance = new TicketCategory();
+
+
+        if (Request::validate([
+            'ticket_category_id',
+            'type',
+            'price',
+            'currency',
+            // 'spots',
+            // 'event_id',
+        ])) {
+            $self = $instance->find($params['ticket_category_id']);
+            if ($self) {
+                // $mail = new Mail();
+                $item =  $self->save(
+                    [
+                        'type' => $params["type"],
+                        'price' => $params["price"],
+                        'currency' => $params["currency"],
+                        // 'spots' => isset($params["spots"]) ? $params["spots"] : NULL,
+                        // 'available' => isset($params["spots"]) ? $params["spots"] : NULL,
+                        // 'event_id' => $params["event_id"],
+                        'updated_at' => date('Y-m-d h:i'),
+                    ]
+                );
+
+                // return $created->send();
+                return "success";
+            } else {
+                // return "oklm";
+                http_response_code(400);
+                return "please check params ";
+            }
+        } else {
+            // return "oklm";
+            http_response_code(400);
+            return "please check params ";
+        }
+    }
     public static function search()
     {
         $items = new TicketCategory();

@@ -103,4 +103,11 @@ class AuthenticationController extends Controller
         $token = $tok->generate($user);
         return $token->token;
     }
+    public static function user()
+    {
+        $token = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : null;
+        $passport  = new PersonalToken();
+        // $passport->check()
+        return $passport->findByOptions(['token' => $token]) ? $passport->findByOptions(['token' => $token])->user() : false;
+    }
 }

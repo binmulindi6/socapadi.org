@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\Auth\AuthenticationController;
 use App\Http\Request;
 use App\Model\Notification;
 use App\Model\Reservation;
@@ -95,6 +96,57 @@ class ReservationController extends Controller
             return false;
         }
     }
+
+    public static function changStatus()
+    {
+        if (Request::validate(['id'])) {
+            $params = Request::params();
+            if (isset($params['id'])) {
+                $instance = new Reservation();
+                $self =  $instance->find($params['id']);
+                $user = AuthenticationController::user();
+                if (isset($params['verified']) && $user) {
+                    $self->save(
+                        [
+                            "verified" => $params['verified'],
+                            "verified_by" => $user->id,
+                            "verified_at" => date('Y-m-d h:i'),
+                            "updated_at" => date('Y-m-d h:i')
+                        ]
+                    );
+                }
+                if (isset($params['approved']) && $user) {
+                    $self->save(
+                        [
+                            "approved" => $params['approved'],
+                            "approved_by" => $user->id,
+                            "approved_at" => date('Y-m-d h:i'),
+                            "updated_at" => date('Y-m-d h:i')
+                        ]
+                    );
+                }
+
+                if ($user) {
+                    return "success";
+                } else {
+                    // return "oklm";
+                    http_response_code(403);
+                    return "Access Denied ";
+                }
+            } else {
+                // return "oklm";
+                http_response_code(400);
+                return "please check params ";
+            }
+        } else {
+            // return "oklm";
+            http_response_code(400);
+            return "please check params ";
+        }
+
+        // Notification::notify($data['user_id'], "Reservation Receved", "Your Reseravtion has been made successfully, for more details check on My Tickets menu", 'event');
+    }
+
     public static function search()
     {
         $items = new Reservation();

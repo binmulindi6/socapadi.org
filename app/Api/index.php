@@ -95,11 +95,12 @@ if (Request::post($host . '/api', true)) {
                 ?: (Request::post($host . '/api/events/pay') && AbilityMiddleware::check(['simple', 'admin']) && ($data = PaymentController::store()))
                 ?: (Request::post($host . '/api/events/pay_many') && AbilityMiddleware::check(['simple', 'admin']) && ($data = PaymentController::storeMany()))
                 ?: (Request::post($host . '/api/events/like') && AbilityMiddleware::check(['simple']) && ($data = LikeController::store()))
+                ?: (Request::post($host . '/api/events/change_status') && AbilityMiddleware::check(['admin']) && ($data = EventController::changStatus()))
                 ?:  NotFound();
         }
 
 
-        //
+        //Users
         if (Request::post($host . '/api/user', true)) {
             (Request::post($host . '/api/users/change_status') && AbilityMiddleware::check(['admin']) && ($data = UserController::changStatus()))
                 ?: (Request::post($host . '/api/users/update') && AbilityMiddleware::check(['admin', 'simple']) && ($data = UserController::update()))
@@ -110,11 +111,18 @@ if (Request::post($host . '/api', true)) {
         //Ticktes
         if (Request::post($host . '/api/tickets', true)) {
             (Request::post($host . '/api/tickets/categories') && AbilityMiddleware::check(['admin', 'manager']) && ($data = TicketCategoryController::store()))
+                ?: (Request::post($host . '/api/tickets/categories/update') && AbilityMiddleware::check(['admin', 'manager']) && ($data = TicketCategoryController::update()))
+                ?:  NotFound();
+        }
+        //RESERVATIONS
+        if (Request::post($host . '/api/reservations', true)) {
+            (Request::post($host . '/api/reservations/change_status') && AbilityMiddleware::check(['admin', 'manager', 'operator']) && ($data = ReservationController::changStatus()))
                 ?:  NotFound();
         }
         //PAYMENT
         if (Request::post($host . '/api/payments', true)) {
-            (Request::post($host . '/api/payments/methods/store') && AbilityMiddleware::check(['admin']) && ($data = PaymentMethodController::store()))
+            (Request::post($host . '/api/payments/change_status') && AbilityMiddleware::check(['admin', 'manager', 'operator']) && ($data = PaymentController::changStatus()))
+                ?: (Request::post($host . '/api/payments/methods/store') && AbilityMiddleware::check(['admin']) && ($data = PaymentMethodController::store()))
                 ?:  NotFound();
         }
 

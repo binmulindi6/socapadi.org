@@ -147,6 +147,32 @@ class EventController extends Controller
             return "please check params ";
         }
     }
+    public static function changStatus()
+    {
+        if (Request::validate(['id'])) {
+            $params = Request::params();
+            if (isset($params['id'])) {
+                $instance = new Event();
+                $self =  $instance->find($params['id']);
+                if (isset($params['is_active'])) {
+                    $self->save(["is_active" => $params['is_active'], "updated_at" => date('Y-m-d h:i')]);
+                }
+                if (isset($params['is_sponsored'])) {
+                    $self->save(["is_sponsored" => $params['is_sponsored'], "updated_at" => date('Y-m-d h:i')]);
+                }
+
+                return "success";
+            } else {
+                // return "oklm";
+                http_response_code(400);
+                return "please check params ";
+            }
+        } else {
+            // return "oklm";
+            http_response_code(400);
+            return "please check params ";
+        }
+    }
     public static function view()
     {
         $params = Request::params();

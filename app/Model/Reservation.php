@@ -56,11 +56,12 @@ class Reservation extends Model
 
     public function charge()
     {
+        $unserInstance = new User();
         $this->ticket = $this->ticket();
         $this->event = $this->event();
         $this->ticket_category = $this->ticket_category();
+        $this->approved_by = isset($this->approved_by) ? $unserInstance->find($this->approved_by) : null;
+        $this->verified_by = isset($this->verified_by) ? $unserInstance->find($this->verified_by) : null;
         return $this;
     }
-
-
 }

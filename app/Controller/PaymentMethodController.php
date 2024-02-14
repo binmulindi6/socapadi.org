@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Http\Request;
+use App\Model\Payment;
 use App\Model\PaymentMethod;
+use App\Controller\Auth\AuthenticationController;
 
 // save mail in DB
 class PaymentMethodController extends Controller
@@ -54,6 +56,10 @@ class PaymentMethodController extends Controller
             return "please check params ";
         }
     }
+
+
+
+
     public static function search()
     {
         $items = new PaymentMethod();
