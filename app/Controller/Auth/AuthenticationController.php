@@ -15,20 +15,18 @@ class AuthenticationController extends Controller
     {
 
         if (Request::validate([
-            'first_name',
-            // 'last_name',
-            'username',
+            'names',
             'email',
             'telephone',
             'password',
         ])) {
             $params = Request::params();
             $instance = new User();
-            // $mail = new Mail();
-            if ($instance->checkUsername($params["username"])) {
-                http_response_code(400);
-                return "Username already exists";
-            }
+            // // $mail = new Mail();
+            // if ($instance->checkemail($params["email"])) {
+            //     http_response_code(400);
+            //     return "email already exists";
+            // }
             if ($instance->checkEmail($params["email"])) {
                 http_response_code(400);
                 return "Email already taken";
@@ -39,22 +37,20 @@ class AuthenticationController extends Controller
             }
 
             // die();
+            $verify_code = mt_rand(11111, 99999);
             $user = $instance->create(
                 [
-                    'first_name' => $params["first_name"],
-                    // 'last_name' => $params["last_name"],
-                    // 'organiser' => $params["organiser"],
-                    'username' => $params["username"],
+                    'names' => $params["names"],
+                    'email_verification_code' => $verify_code,
                     'email' => $params["email"],
                     'telephone' => $params["telephone"],
                     'password' => password_hash($params["password"], PASSWORD_DEFAULT),
-                    'created_at' => date('Y-m-d h:i'),
                 ]
             );
 
             // return $created->send();
             // $user = $instance->findByOptions([$params['email']]);
-            $token = self::generateToken($user->id);
+            $token = self::generateToken($user);
             return [
                 "user" => $user,
                 "token" => $token,
@@ -70,15 +66,15 @@ class AuthenticationController extends Controller
         // password_verify($userEnteredPassword, $storedHashedPassword)
         // var_dump($_SERVER['HTTP_AUTHORIZATION']);
         if (Request::validate([
-            'username',
+            'email',
             'password',
         ])) {
             $params = Request::params();
             $instance = new User();
-            $user = $instance->findByOptions(["username" => $params['username']]) ? $instance->findByOptions(["username" => $params['username']]) : $instance->findByOptions(["email" => $params['username']]);
+            $user = $instance->findByOptions(["email" => $params['email']]) ? $instance->findByOptions(["email" => $params['email']]) : $instance->findByOptions(["email" => $params['email']]);
             if (!is_null($user) && password_verify($params['password'], $user->password)) {
 
-                $token = $user->getLastToken() ? $user->getLastToken()[0]->token : self::generateToken($user->id);
+                $token = ($user->getLastToken()  && $user->getLastToken()[0]) ?  $user->getLastToken()[0]->token : self::generateToken($user);
                 // return $token
                 return
                     [
@@ -88,7 +84,7 @@ class AuthenticationController extends Controller
             } else {
                 // return "oklm";
                 http_response_code(400);
-                return "username or password incorrect";
+                return "email or password incorrect";
             }
         } else {
             // return "oklm";
@@ -100,7 +96,8 @@ class AuthenticationController extends Controller
     public static function generateToken($user)
     {
         $tok = new PersonalToken();
-        $token = $tok->generate($user);
+        $ability = $user->isAdmin() ? 'admin' : 'simple';
+        $token = $tok->generate($user->id, $ability);
         return $token->token;
     }
     public static function user()

@@ -8,82 +8,60 @@ class User extends Model
     protected $class_name = 'App\Model\User';
 
 
-    public $first_name;
-    public $last_name;
-    public $username;
+    public $names;
     public $email;
     public $telephone;
     public $email_verified_at;
     public $password;
-    public $event_id;
     public $is_admin;
-    public $is_manager;
-    public $is_operator;
     public $is_active;
     public $avatar;
     public $remember_token;
-    public $deleted_at;
-    public $created_at;
-    public $updated_at;
+    public $email_verification_code;
+    public $purchases;
+    public $sellings;
+    public $swaps;
+
 
     public function getInfo()
     {
         if (!is_null($this)) {
 
-            return [
-                "id" => $this->id,
-                "avatar" => $this->avatar,
-                "username" => $this->username,
-                "email" => $this->email,
-                "first_name" => $this->first_name,
-                "last_name" => $this->last_name,
-                "telephone" => $this->telephone,
-                "is_admin" => $this->is_admin,
-                "is_manager" => $this->is_manager,
-            ];
+            $this->purchases = $this->purchases();
+            $this->sellings = $this->sellings();
+            $this->swaps = $this->swaps();
+            return $this;
         } else {
             return null;
         }
     }
 
-    public function event()
+    ///crypto
+    public function purchases()
     {
-        $eventInstance = new Event();
-        return $eventInstance->findByOptions(['id' => $this->event_id]);
+        $instance = new Purchase();
+        return $instance->getByOptions(['user_id' => $this->id]);
     }
-    public function tickets()
+    public function sellings()
     {
-        $ticketsInstance = new Ticket();
-        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
-        return array_map(function ($ticktes) {
-            return $ticktes->charge();
-        }, $ticketsInstance->getByOptions(['user_id' => $this->id]));
+        $instance = new Selling();
+        return $instance->getByOptions(['user_id' => $this->id]);
     }
-    public function reservations()
+    public function swaps()
     {
-        $reservationInstance = new Reservation();
-        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
-        return array_map(function ($reservation) {
-            return $reservation->charge();
-        }, $reservationInstance->getByOptions(['user_id' => $this->id]));
-    }
-    public function payments()
-    {
-        $paymentInstance = new Payment();
-        // return $reservationInstance->getByOptions(['user_id' => $this->id]);
-        return array_map(function ($payment) {
-            return $payment->charge();
-        }, $paymentInstance->getByOptions(['user_id' => $this->id]));
+        $instance = new Swap();
+        return $instance->getByOptions(['user_id' => $this->id]);
     }
     public function notifications()
     {
-        $notificationInstance = new Notification();
+        $notificationInstance = new Notificatoin();
         return $notificationInstance->getByOptions(['user_id' => $this->id]);
     }
     public function getLastToken()
     {
         $tokenInstance = new PersonalToken();
-        return $tokenInstance->getUserLastToken($this->id);
+        $ability = $this->isAdmin() ? 'admin' : 'simple';
+        return $tokenInstance->getUserLastToken($this->id, $ability);
     }
 
     public function changeStatus()
@@ -108,24 +86,10 @@ class User extends Model
         else
             return false;
     }
-    public function isManager()
-    {
-        if ((int)$this->is_manager === 1)
-            return true;
-        else
-            return false;
-    }
-    public function isOperator()
-    {
-        if ((int)$this->is_operator === 1)
-            return true;
-        else
-            return false;
-    }
 
     public function isSimple()
     {
-        if (!$this->isAdmin() && !$this->isManager() && !$this->isOperator())
+        if (!$this->isAdmin())
             return true;
         else
             return false;

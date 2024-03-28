@@ -12,15 +12,25 @@ class Model
   protected $table_name;
   protected $class_name;
   public $id;
+  public $deleted_at;
+  public $created_at;
+  public $updated_at;
 
   function __construct()
   {
-    $this->conn = Database::connect();
   }
 
+  // function __destruct()
+  // {
+  //   // $this->conn->destroy();
+  // }
   public function getLatest()
   {
     return $this->getData("select * from $this->table_name where deleted_at is NULL order by created_at desc");
+  }
+  public function orderBy($column, $order = 'asc')
+  {
+    return $this->getDatas("select * from $this->table_name where deleted_at is NULL order by $column $order");
   }
   public function latest()
   {
@@ -47,16 +57,39 @@ class Model
     $i = 1;
     foreach ($options as $index => $value) {
       if ($i === $indexes) {
-        $ops .= "$index = '$value' ";
+        $ops .= $value === NULL ? "$index is NULL " : "$index = '$value' ";
       } else {
-        $ops .= "$index = '$value' and ";
+        $ops .= $value === NULL ? "$index is NULL and " : "$index = '$value' and ";
       }
       $i += 1;
     }
 
     return $this->getData("select * from $this->table_name where $ops and deleted_at is NULL");
   }
-  public function  getByOptions($options)
+  public function  getByOptions($options, $max = null)
+  {
+    // echo $this->table_name;
+    $ops = "";
+    $indexes = count($options);
+    // echo($indexes);
+    $i = 1;
+    foreach ($options as $index => $value) {
+      if ($i === $indexes) {
+        $ops .= $value === NULL ? "$index is NULL " : "$index = '$value' ";
+      } else {
+        $ops .= $value === NULL ? "$index is NULL and " : "$index = '$value' and ";
+      }
+      $i += 1;
+    }
+    // echo $ops;
+    // echo ("select * from $this->table_name where $ops and deleted_at is NULL");
+    // die();
+    return
+      $max ?
+      $this->getDatas("select * from $this->table_name where $ops and deleted_at is NULL order by created_at desc limit $max")
+      : $this->getDatas("select * from $this->table_name where $ops and deleted_at is NULL order by created_at desc");
+  }
+  public function  count($options)
   {
     // echo $this->table_name;
     $ops = "";
@@ -74,7 +107,22 @@ class Model
     // echo $ops;
     // echo ("select * from $this->table_name where $ops and deleted_at is NULL");
     // die();
-    return $this->getDatas("select * from $this->table_name where $ops and deleted_at is NULL order by created_at desc");
+    $query =  "select count('id') from $this->table_name where $ops and deleted_at is NULL order by created_at desc";
+    if ($this->conn === null) {
+      $this->conn = Database::connect();
+    }
+    try {
+      $stmt = $this->conn->query($query);
+      if ($stmt) {
+        return $stmt->fetch()[0];
+      } else {
+        http_response_code(500);
+        return "Error While updating record: ";
+      }
+    } catch (PDOException $e) {
+      http_response_code(500);
+      echo "Connection failed: " . $e->getMessage();
+    }
   }
   public function  getByCustomQuery($options)
   {
@@ -122,14 +170,11 @@ class Model
     $i = 1;
     foreach ($options as $index => $value) {
       if (!is_null($value)) {
-        if ($i === $indexes) {
-          $ops .= '' . $index . ' = "' . $value  . '"';
-        } else {
-          $ops .= '' . $index . ' = "' . $value  . '", ';
-        }
+        $ops .= '' . $index . ' = "' . $value  . '", ';
       }
       $i += 1;
     }
+    $ops .= 'updated_at = ' .  date('Y-m-d H:i')  . '';
 
     // echo ("UPDATE $this->table_name set $ops where id = $id");
     return $this->execute("UPDATE $this->table_name set $ops where id = '$id'");
@@ -144,19 +189,10 @@ class Model
     $i = 1;
     foreach ($options as $index => $value) {
       if (!is_null($value)) {
-        if ($i === $indexes) {
-          $ops .= '' . $index . ' = "' . $value  . '"';
-        } else {
-          $ops .= '' . $index . ' = "' . $value  . '", ';
-        }
+        $ops .= '' . $index . ' = "' . $value  . '", ';
       }
-      $i += 1;
     }
-
-
-
-    // echo ("UPDATE $this->table_name set $ops where id = $this->id");
-    // die();
+    $ops .= 'updated_at = ' .  date('Y-m-d H:i')  . '';
     return $this->execute("UPDATE $this->table_name set $ops where id = '$this->id'");
   }
 
@@ -169,18 +205,15 @@ class Model
     // echo($indexes);
     $i = 1;
     foreach ($options as $index => $value) {
-      if ($i === $indexes) {
-        $ops .= "$index";
-        $values .= $value === null ? "NULL"  : '"' . $value . '"';
-      } else {
-        $ops .= "$index, ";
-        $values .= $value === null ? "NULL,"  : '"' . $value . '", ';
-      }
-      $i += 1;
+      $ops .= "$index, ";
+      $values .= $value === null ? "NULL,"  : '"' . $value . '", ';
     }
+    $ops .= "created_at, updated_at ";
+    $values .= '"' . date('Y-m-d H:i') . '", ' . '"' . date('Y-m-d H:i') . '"';
 
-    // echo ("UPDATE $this->table_name set $ops where id = $id");
-    // return var_dump("INSERT into $this->table_name ($ops) values ($values)");
+
+    //  var_dump("INSERT into $this->table_name ($ops) values ($values)");
+    // die();
     return $this->execute("INSERT into $this->table_name ($ops) values ($values)");
     // return $this->execute("INSERT intp $this->table_name $ops values ($values)");
   }
@@ -203,6 +236,9 @@ class Model
   public function  getData($query)
   {
     try {
+      if ($this->conn === null) {
+        $this->conn = Database::connect();
+      }
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
       return $stmt->fetchObject($this->class_name);
@@ -216,7 +252,11 @@ class Model
 
   public function  getDatas($query)
   {
+
     try {
+      if ($this->conn === null) {
+        $this->conn = Database::connect();
+      }
       $stmt = $this->conn->prepare($query);
       $stmt->execute();
       return $stmt->fetchAll(PDO::FETCH_CLASS, $this->class_name);
@@ -233,10 +273,17 @@ class Model
     // echo $query;
     // var_dump($this->conn);
     // die();
+    if ($this->conn === null) {
+      $this->conn = Database::connect();
+    }
     try {
       $stmt = $this->conn->query($query);
       if ($stmt) {
-        return $this->find($this->conn->lastInsertId()) ? $this->find($this->conn->lastInsertId()) : $this->find($this->id);
+        if ($this->id) {
+          return $this->find($this->id);
+        } else {
+          return $this->find($this->conn->lastInsertId());
+        }
       } else {
         http_response_code(500);
         return "Error While updating record: ";
@@ -249,7 +296,7 @@ class Model
 
   public function  uploadImage($name, $folder, $file = null)
   {
-    $path = __DIR__ . '/../../public/assets/images/' . $folder;
+    $path = __DIR__ . '/../../public/images/' . $folder;
     // var_dump($_FILES);
     // return false;
     if (isset($_FILES[$name])) {
@@ -259,7 +306,7 @@ class Model
       $bytes = random_bytes(5);
       $imageCover = bin2hex($bytes) . "." . $extension;
       if (move_uploaded_file($filePath, $path . $imageCover)) {
-        return $imageCover;
+        return $folder . $imageCover;
       } else {
         return false;
       }

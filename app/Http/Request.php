@@ -146,9 +146,14 @@ class Request
             return $pars;
         }
     }
+
     public static function  params()
     {
         return $_REQUEST;
+    }
+    public static function  files()
+    {
+        return $_FILES;
     }
 }
 

@@ -8,10 +8,10 @@ use PHPMailer\PHPMailer\PHPMailer;
 class MailConfig
 {
     public const SMTPDebug = SMTP::DEBUG_OFF; // Enable verbose debug output
-    public const Host = 'mail.easychik.com';
+    public const Host = 'mail.yourhost.com';
     public const SMTPAuth = true;
-    public const Username = 'contact@easychik.com';
-    public const Password = 'admin@easyChik';
+    public const Username = 'contact@yourhost.com';
+    public const Password = '12345678';
     public const SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     public const Port = 465;
 }
