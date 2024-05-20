@@ -36,6 +36,8 @@ class MailController extends Controller
             $params = Request::params();
             $mail = new Mail();
             // $mail = new Mail();
+            // var_dump($params);
+            // die();
             $created =  $mail->create(
                 [
                     'sender' => $params['sender'],
@@ -69,6 +71,8 @@ class MailController extends Controller
             $params = Request::params();
             $mail = new Mail();
             // $mail = new Mail();
+            var_dump($params);
+            die();
             $created =  $mail->create(
                 [
                     'sender' => $params['sender'],

@@ -33,25 +33,28 @@
                 </div><!-- /.contact-one__content -->
             </div><!-- /.col-sm-12 -->
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-8">
-                <form action="/assets/inc/sendemail.php" class="contact-one__form contact-form-validated">
+                <form id="contact-form" action="/api/send_mail" class="contact-one__form contact-form-validated">
                     <div class="row">
                         <div class="col-lg-6">
-                            <input type="text" name="name" placeholder="Votre Nom">
+                            <input id="sender-name" type="text" name="name" placeholder="Votre Nom">
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-6">
-                            <input type="text" name="email" placeholder="Votre Adresse Mail">
+                            <input id="sender-email" type="text" name="sender" placeholder="Votre Adresse Mail">
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-6">
-                            <input type="text" name="phone" placeholder="Numero de Telephone">
+                            <input id="sender-telephone" type="text" name="telephone" placeholder="Numero de Telephone">
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-6">
-                            <input type="text" name="subject" placeholder="Object">
+                            <input id="sender-subject" type="text" name="subject" placeholder="Object">
                         </div><!-- /.col-lg-6 -->
                         <div class="col-lg-12">
-                            <textarea name="message" placeholder="Votre Message"></textarea>
+                            <textarea id="sender-message" name="message" placeholder="Votre Message"></textarea>
                         </div><!-- /.col-lg-12 -->
                         <div class="col-lg-12">
-                            <button type="submit" class="thm-btn">Envoyer le Message</button><!-- /.thm-btn -->
+                            <button id="btn-submit" type="submit" class="thm-btn">Envoyer le Message</button>
+                            <button id="loader" style="display:none;s" disabled class="thm-btn">Envoie en
+                                cours....</button>
+                            <!-- /.thm-btn -->
                         </div><!-- /.col-lg-12 -->
                     </div><!-- /.row -->
                 </form>
@@ -99,17 +102,21 @@
 </section><!-- /.contact-infos -->
 
 <div style="overflow:hidden;max-width:100%;width:100%;height:500px;">
-    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;"><iframe style="height:100%;width:100%;border:0;" frameborder="0" src="https://www.google.com/maps/embed/v1/place?q=Bukavu,+République+démocratique+du+Congo&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;"><iframe
+            style="height:100%;width:100%;border:0;" frameborder="0"
+            src="https://www.google.com/maps/embed/v1/place?q=Bukavu,+République+démocratique+du+Congo&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
         <style>
-            #embed-map-display .text-marker {}
+        #embed-map-display .text-marker {}
 
-            .map-generator {
-                max-width: 100%;
-                max-height: 100%;
-                background: none;
-            }
+        .map-generator {
+            max-width: 100%;
+            max-height: 100%;
+            background: none;
+        }
         </style>
     </div>
+    <script src="/public/assets/js/contact.js">
 
+    </script>
 
     <?php require('partials/footer.php') ?>

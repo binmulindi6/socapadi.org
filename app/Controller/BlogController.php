@@ -21,11 +21,11 @@ class BlogController extends Controller
         $items = new Blog();
         return $items->latest(3);
     }
-    public static function show($request)
+    public static function show($id)
     {
         // return [1];
         $item = new Blog();
-        $data = $item->find($request['id']);
+        $data = $item->find($id);
         return $data;
     }
 

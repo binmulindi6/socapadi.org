@@ -20,7 +20,7 @@ $host = "";
 if (Request::get($host . '/api/blogs', true)) {
     (Request::get($host . '/api/blogs') &&  ($data = BlogController::index()))
         ?: (Request::get($host . '/api/blogs/latest') &&  ($data = BlogController::latest()))
-        ?: (Request::get($host . '/api/blogs', false, ['id']) && $data = BlogController::show(Request::getParams(['id'])))
+        ?: (Request::get($host . '/api/blog', false, ['id']) && $data = BlogController::show(Request::getParams(['id'])))
         // echo 10;
         ?:  NotFound();
 } else

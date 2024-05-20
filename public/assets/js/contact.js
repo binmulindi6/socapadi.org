@@ -13,6 +13,7 @@ form &&
     const mail = {
       from: document.getElementById("sender-email").value,
       name: document.getElementById("sender-name").value,
+      subject: document.getElementById("sender-subject").value,
       message: document.getElementById("sender-message").value,
       telephone: document.getElementById("sender-telephone").value,
     };
@@ -22,7 +23,7 @@ form &&
     const formData = new FormData();
     formData.append("message", mail.message);
     // formData.append('sendMailToEasyChik', 'true')
-    formData.append("subject", "Contact Mude Capital");
+    formData.append("subject", mail.subject);
     formData.append("sender", mail.from);
     formData.append("name", mail.name);
     formData.append("telephone", mail.telephone);

@@ -16,34 +16,34 @@
                         coopérative.</p>
                 </div><!-- /.col-lg-6 -->
             </div><!-- /.row -->
-            <div id="blogs" class="row">
+            <div id="blogs" class="row gap-4 justify-content-center align-items-center">
 
 
                 <script>
-                    const root = document.getElementById("blogs");
-                    const loadData = (root) =>
-                        (root.innerHTML = `
+                const root = document.getElementById("blogs");
+                const loadData = (root) =>
+                    (root.innerHTML = `
               <span class="loader"></span>
-              <span class="loader hidden md:block"></span>
-              <span class="loader hidden md:block"></span>
+              <span class="loader hidden d-none d-md-block"></span>
+              <span class="loader hidden d-none d-md-block"></span>
               `);
-                    fetch("/api/blogs/latest")
-                        .then((res) => {
-                            return res.json();
-                        })
-                        .then((blogs) => {
-                            let container = ``;
-                            blogs.forEach(
-                                ({
-                                    id,
-                                    title,
-                                    category,
-                                    description,
-                                    cover,
-                                    author,
-                                    created_at,
-                                }) => {
-                                    container += `    
+                fetch("/api/blogs/latest")
+                    .then((res) => {
+                        return res.json();
+                    })
+                    .then((blogs) => {
+                        let container = ``;
+                        blogs.forEach(
+                            ({
+                                id,
+                                title,
+                                category,
+                                description,
+                                cover,
+                                author,
+                                created_at,
+                            }) => {
+                                container += `    
                          <div class="col-md-6 col-lg-4">                
                         <div class="blog-card">
                         
@@ -73,14 +73,14 @@
                         </div>
                         </div>
                     </div>`;
-                                }
-                            );
+                            }
+                        );
 
-                            root.innerHTML = container;
-                        })
-                        .catch((err) => console.error(err));
+                        root.innerHTML = container;
+                    })
+                    .catch((err) => console.error(err));
 
-                    loadData(root);
+                loadData(root);
                 </script>
 
             </div><!-- /.row -->
