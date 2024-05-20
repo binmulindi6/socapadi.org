@@ -101,18 +101,20 @@
     </div><!-- /.container -->
 </section><!-- /.contact-infos -->
 
-<div style="overflow:hidden;max-width:100%;width:100%;height:500px;">
-    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;"><iframe
-            style="height:100%;width:100%;border:0;" frameborder="0"
-            src="https://www.google.com/maps/embed/v1/place?q=Bukavu,+République+démocratique+du+Congo&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
+<div style="overflow:hidden;
+max-width:100%;
+width:100%;
+height:500px;
+">
+    <div id="embed-map-display" style="height:100%; width:100%;max-width:100%;"><iframe style="height:100%;width:100%;border:0;" frameborder="0" src="https://www.google.com/maps/embed/v1/place?q=Bukavu,+République+démocratique+du+Congo&key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8"></iframe>
         <style>
-        #embed-map-display .text-marker {}
+            #embed-map-display .text-marker {}
 
-        .map-generator {
-            max-width: 100%;
-            max-height: 100%;
-            background: none;
-        }
+            .map-generator {
+                max-width: 100%;
+                max-height: 100%;
+                background: none;
+            }
         </style>
     </div>
     <script src="/public/assets/js/contact.js">

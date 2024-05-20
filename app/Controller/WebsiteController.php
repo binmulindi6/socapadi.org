@@ -31,7 +31,9 @@ class WebsiteController extends Controller
     ];
     public static function  home()
     {
-        return self::view('index');
+        $instance = new Project();
+        $projects = $instance->all();
+        return self::view('index', ['projects' => $projects]);
     }
 
     public static function staff()

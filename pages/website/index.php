@@ -59,7 +59,8 @@
         <div class="main-slider__nav">
             <div class="swiper-button-prev" id="main-slider__swiper-button-next"><i class="agrikon-icon-left-arrow"></i>
             </div>
-            <div class="swiper-button-next" id="main-slider__swiper-button-prev"><i class="agrikon-icon-right-arrow"></i></div>
+            <div class="swiper-button-next" id="main-slider__swiper-button-prev"><i
+                    class="agrikon-icon-right-arrow"></i></div>
         </div><!-- /.main-slider__nav -->
 
     </div><!-- /.swiper-container thm-swiper__slider -->
@@ -165,18 +166,19 @@
             }
         }}'>
             <div class="swiper-wrapper">
-                <?php foreach ($data["website"]["projets_realises"] as $item) : ?>
-                    <div class="swiper-slide">
-                        <div class="projects-one__single">
-                            <img src="<?= $item["cover"] ?>" alt="">
-                            <div class="projects-one__content">
-                                <h3>
-                                    <?= $item["name"] ?>
-                                </h3>
-                                <a href="project-details?id=<?= $item['id'] ?>" class="projects-one__button"><i class="agrikon-icon-right-arrow"></i></a><!-- /.projects-one__button -->
-                            </div><!-- /.projects-one__content -->
-                        </div><!-- /.projects-one__single -->
-                    </div><!-- /.swiper-slide -->
+                <?php foreach ($projects as $item) : ?>
+                <div class="swiper-slide">
+                    <div class="projects-one__single">
+                        <img src="/assets/images/<?= $item->cover ?>" alt="">
+                        <div class="projects-one__content">
+                            <h5>
+                                <?= $item->name ?>
+                            </h5>
+                            <a href="project-details?id=<?= $item->id ?>" class="projects-one__button"><i
+                                    class="agrikon-icon-right-arrow"></i></a><!-- /.projects-one__button -->
+                        </div><!-- /.projects-one__content -->
+                    </div><!-- /.projects-one__single -->
+                </div><!-- /.swiper-slide -->
                 <?php endforeach ?>
             </div><!-- /.swiper-wrapper -->
             <div class="swiper-pagination" id="projects-one__swiper-pagination"></div>
@@ -185,7 +187,8 @@
 </div><!-- /.projects-one -->
 
 <section class="call-to-action__three jarallax" data-jarallax data-speed="0.3" data-imgPosition="50% 50%">
-    <img class="call-to-action__three__bg jarallax-img" src="/assets/images/backgrounds/cta-1-bg-1.jpg" alt="parallax-image" />
+    <img class="call-to-action__three__bg jarallax-img" src="/assets/images/backgrounds/cta-1-bg-1.jpg"
+        alt="parallax-image" />
     <div class="container">
         <div class="row">
             <div class="col-lg-5 wow fadeInLeft" data-wow-duration="1500ms">
