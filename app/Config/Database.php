@@ -11,7 +11,7 @@ class Database
   private $servername = "localhost:8889";
   private $username = "root";
   private $password = "root";
-  private $db = "mude_capital";
+  private $db = "socapadi_blog";
   private $conn;
 
   function __construct()

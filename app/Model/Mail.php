@@ -28,7 +28,7 @@ class Mail extends Model
         try {
             $to = $this->recever;
             $subject = "Contact From Website";
-            $cc = "binmulindi.abraham@gmail.com";
+            $cc = MailConfig::$cc;
             $message = "
                 <p>Name : " . $this->sender_name . "</p> " .
                 "<p> Telephone : " . $this->sender_telephone . "</p>" .
@@ -41,7 +41,7 @@ class Mail extends Model
 
             if (mail($to, $subject, $message, $headers)) {
                 // return 'success';
-                return $this->reception($this->sender, $this->sender_name, $this->message);
+                return $this->reception($this->sender, $this->sender_name, $this->message, $this->recever);
             } else {
                 $this->delete();
                 return 'not sent';
@@ -57,20 +57,20 @@ class Mail extends Model
         try {
             $to = $this->recever;
             $subject = "Contact From Website";
-            $cc = "binmulindi.abraham@gmail.com";
+            $cc = MailConfig::$cc;
             $message = "
                 <p>Name : " . $this->sender_name . "</p> " .
                 "<p> Telephone : " . $this->sender_telephone . "</p>" .
                 "<p> Mail : " . $this->sender . "</p>" .
                 "<p> Message : " . $this->message . "</p>";
 
-            $headers = "From:easyChik <" . $this->sender . ">\r\n" .
+            $headers = "From:MudeCapital <" . $this->sender . ">\r\n" .
                 "CC:" . $cc . "" . "\r\n";
             $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
             if (mail($to, $subject, $message, $headers)) {
                 // return 'success';
-                return $this->reception($this->sender, $this->sender_name, $this->message);
+                return $this->reception($this->sender, $this->sender_name, $this->message, $this->recever);
             } else {
                 $this->delete();
                 return 'not sent';
@@ -80,7 +80,7 @@ class Mail extends Model
         }
     }
 
-    public function reception($mail, $name, $message)
+    public function reception($mail, $name, $message, $from)
     {
         $to = $mail;
         $subject = "Accusé de Réception";
@@ -90,9 +90,9 @@ class Mail extends Model
             "<p>' " . $message . " '</p>" .
             "<p> Nous Vous rémercions de nous avoir contacté, nous vous prometons de vous revenir dans le plus bref delai.</p>" .
             "<p>  </p>" .
-            "<h3> l'équipe d'<b>easyChik.</b> </h3>";
+            "<h3> l'équipe de <b>Mude Capital.</b> </h3>";
 
-        $headers = "From:easyChik <contact@easychik.com>\r\n";
+        $headers = "From:Mude Capital <$from>\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
         if (mail($to, $subject, $message, $headers)) {

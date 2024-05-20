@@ -136,7 +136,7 @@ class Request
         $explode = explode('/', $req);
         if ($paramsNumber == 1) {
             $id = $explode[count($explode) - 1];
-            return [$params[0] => $id];
+            return $id;
         } else {
             $pars = [];
             for ($i = 0; $i < $paramsNumber; $i++) {
@@ -154,6 +154,11 @@ class Request
     public static function  files()
     {
         return $_FILES;
+    }
+    public static function  redirect($to)
+    {
+        header("Location: $to"); /* Redirect browser */
+        exit;
     }
 }
 

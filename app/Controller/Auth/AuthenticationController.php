@@ -2,10 +2,13 @@
 
 namespace App\Controller\Auth;
 
-use App\Http\Request;
+use App\Model\Mail;
 use App\Model\User;
-use App\Controller\Controller;
+use App\Http\Request;
+use App\Http\Session;
 use App\Model\PersonalToken;
+use App\Controller\Controller;
+use App\Controller\WebsiteController;
 
 // save mail in DB
 class AuthenticationController extends Controller
@@ -91,6 +94,52 @@ class AuthenticationController extends Controller
             http_response_code(400);
             return "please check params ";
         }
+    }
+    public static function loginWeb()
+    {
+        // password_verify($userEnteredPassword, $storedHashedPassword)
+        // var_dump($_SERVER['HTTP_AUTHORIZATION']);
+        if (Request::validate([
+            'email',
+            'password',
+        ])) {
+            $params = Request::params();
+            $instance = new User();
+            $user = $instance->findByOptions(["email" => $params['email']]) ? $instance->findByOptions(["email" => $params['email']]) : $instance->findByOptions(["email" => $params['email']]);
+            if (!is_null($user) && password_verify($params['password'], $user->password)) {
+                $_SESSION["user"] = $user;
+                return Request::redirect('/dashboard');
+            } else {
+                // return "oklm";
+                session_unset();
+                http_response_code(400);
+                echo "
+                <script>
+                    alert('passowrd incorect');
+                    window.history.back();
+                </script>
+                ";
+            }
+        } else {
+            // echo 1113;
+            // return "oklm";
+            http_response_code(400);
+            echo "Unautorised";
+        }
+    }
+
+
+
+    public static function logout()
+    {
+        return Session::logout();
+        // return 'sucess';
+    }
+    public static function logoutWeb()
+    {
+        Session::logout();
+        return Request::redirect('/dashboard');
+        // return 'sucess';
     }
 
     public static function generateToken($user)

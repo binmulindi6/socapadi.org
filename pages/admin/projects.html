@@ -1,0 +1,162 @@
+<!-- =========== listing Section Start =========== -->
+<section class="bg-slate-100 mt-[77px] py-3 px-3">
+  <div class="container">
+    <div class="flex pt-16">
+      <div class="w-full flex p-2 p-10">
+        <a
+          href="/admin/post-project"
+          class="btn text-white p-2 bg-primary rounded"
+        >
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+          Poster Un Projet
+        </a>
+      </div>
+    </div>
+    <div class="container">
+      <div class="text-center">
+        <h1 class="text-3xl font-medium my-3">Tous les Projets</h1>
+        <!-- <p class="text-slate-500 mt-5 mb-4">
+              Trouvez ici les dernière Nouvelles et articles poster par notre
+              équipe.
+            </p> -->
+      </div>
+      <div
+        id="all-blogs"
+        class="grid lg:grid-cols-3 gap-6 lg:py-16 py-14 justify-center"
+      >
+        <script>
+          const root2 = document.getElementById("all-blogs");
+          const loadData2 = (root) =>
+            (root.innerHTML = `
+              <span class="loader"></span>
+              <span class="loader hidden md:block"></span>
+              <span class="loader hidden md:block"></span>
+              `);
+          fetch("/api/projects")
+            .then((res) => {
+              return res.json();
+            })
+            .then((blogs) => {
+              let container = ``;
+              blogs.forEach(
+                ({ id, name, debut, fin, cover, partenaire, state }) => {
+                  container += `
+                      <div id="post-${id}">
+                          <div
+                            style="background-image: url('/assets/images/${cover}');
+                            height: 250px;
+                            background-position: center;
+                            width: 100%;
+                            background-repeat: no-repeat;
+                            background-size: cover;
+                            border-radius : 10px;
+                            "
+                            class="bg-center bg-cover bg-no-repeat rounded-mb mb-5"
+                          ></div>
+                          <div class="flex justify-between items-center">
+                            <span
+                            class="bg-green-500/10 text-green-500 font-medium rounded-md text-xs py-1 px-2"
+                            >
+                            <a href="#">Projet ${state}</a>
+                            </span>
+                            <div class="flex gap-4 items-center">
+                            <span
+                            class="bg-blue-500/10 text-blue-500 font-medium rounded-md text-xs py-1 px-2"
+                            >
+                            <a href="/admin/edit-project/${id}">Edit</a>
+                            </span>
+                            <form id="${id}" method="POST" action="/api/projects/delete"
+
+                            class="frm-delete bg-red-500/10 cursor-pointer text-red-500 font-medium rounded-md text-xs py-1 px-2"
+                            >
+                            <input name="blog_id" value="${id}" type="hidden"/>
+                            <button type="submit">Delete</button>
+                            </form>
+                            </div>
+                            </div>
+                          <h1 class="text-lg my-3 transition-all hover:text-primary">
+                            <a target="_blank" href="/project-details?id=${id}">${name}</a>
+                          </h1>
+                          <p class="text-sm/relaxed tracking-wider text-gray-500">
+                              ${name} <a href="/project-details?id=${id}" target="_blank" class="text-primary">read more</a>
+                          </p>
+                        </div>
+                `;
+                }
+              );
+
+              root2.innerHTML = container;
+
+              const formDelete = document.querySelectorAll(".frm-delete");
+
+              formDelete &&
+                formDelete.forEach((frm) => {
+                  frm.addEventListener("submit", (e) => {
+                    e.preventDefault();
+                    const id = frm.id;
+                    const div = document.querySelector("#post-" + id);
+                    const content = div && div?.innerHTML;
+                    div.innerHTML = `<span class="loader"></span>`;
+                    console.log(div);
+
+                    if (
+                      confirm("Voulez-vous vraiment supprimer cet article?")
+                    ) {
+                      const fData = new FormData(frm);
+                      fetch(frm.action, {
+                        method: "POST",
+                        body: fData,
+                      })
+                        .then((res) => {
+                          return res.json();
+                        })
+                        .then((res) => {
+                          if (res === "success") {
+                            alert("Article Suprimé avec succes");
+                            div.innerHTML = ``;
+                          } else {
+                            alert(
+                              "Oups! une erreur s'ait produite veuillez verifier votre connexion internet puis reessayer"
+                            );
+                            div.innerHTML = content;
+                          }
+                        })
+                        .catch((err) => {
+                          console.log(err);
+                          alert(
+                            "Oups! une erreur s'ait produite veuillez verifier votre connexion internet puis reessayer"
+                          );
+                          div.innerHTML = content;
+                        });
+                    } else {
+                      div.innerHTML = content;
+                    }
+                  });
+                });
+            })
+            .catch((err) => console.error(err));
+
+          loadData2(root2);
+        </script>
+      </div>
+
+      <div class="flex justify-center items-center gap-2">
+        <div class="flex items-center">
+          <a
+            href="javascript:void(0)"
+            class="border border-gray-300 rounded-md text-sm tracking-wider transition-all duration-150 hover:shadow-lg focus:shadow-lg py-2 px-3"
+            ><i class="fa-solid fa-arrow-left me-2"></i> Previous</a
+          >
+        </div>
+
+        <div class="flex items-center">
+          <a
+            href="javascript:void(0)"
+            class="border border-gray-300 rounded-md text-sm tracking-wider transition-all duration-150 hover:shadow-lg focus:shadow-lg py-2 px-3"
+            >Next <i class="fa-solid fa-arrow-right ms-2"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
